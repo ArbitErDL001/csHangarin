@@ -1,0 +1,65 @@
+{% extends 'app/base.html' %}
+
+{% block title %}{% if confirm_delete %}Delete task{% elif task %}Edit task{% else %}New task{% endif %} | Hangarin{% endblock %}
+
+{% block content %}
+<section class="form-panel">
+    {% if confirm_delete %}
+        <p class="eyebrow">Remove task</p>
+        <h1>Delete this task?</h1>
+        <p class="muted">This will permanently remove <strong>{{ task.title }}</strong> and its subtasks and notes.</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="actions">
+                <button class="button danger" type="submit">Delete task</button>
+                <a class="button secondary" href="{% url 'app:home' %}">Keep it</a>
+            </div>
+        </form>
+    {% else %}
+        <p class="eyebrow">{% if task %}Refine the plan{% else %}Start something{% endif %}</p>
+        <h1>{% if task %}Edit task{% else %}New task{% endif %}</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="field">
+                {{ form.title.label_tag }}
+                {{ form.title }}
+                {{ form.title.errors }}
+            </div>
+            <div class="field">
+                {{ form.description.label_tag }}
+                {{ form.description }}
+                {{ form.description.errors }}
+            </div>
+            <div class="form-row">
+                <div class="field">
+                    {{ form.status.label_tag }}
+                    {{ form.status }}
+                    {{ form.status.errors }}
+                </div>
+                <div class="field">
+                    {{ form.deadline.label_tag }}
+                    {{ form.deadline }}
+                    {{ form.deadline.errors }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="field">
+                    {{ form.priority.label_tag }}
+                    {{ form.priority }}
+                    {{ form.priority.errors }}
+                </div>
+                <div class="field">
+                    {{ form.category.label_tag }}
+                    {{ form.category }}
+                    {{ form.category.errors }}
+                </div>
+            </div>
+            <div class="actions">
+                <button class="button" type="submit">{% if task %}Save changes{% else %}Create task{% endif %}</button>
+                <a class="button secondary" href="{% url 'app:home' %}">Cancel</a>
+            </div>
+        </form>
+    {% endif %}
+</section>
+{% endblock %}

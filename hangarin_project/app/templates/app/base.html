@@ -1,0 +1,94 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Hangarin{% endblock %}</title>
+    <style>
+        :root {
+            --ink: #182329;
+            --muted: #68777d;
+            --paper: #f6f8f5;
+            --panel: #ffffff;
+            --line: #dce5e2;
+            --teal: #0c716d;
+            --teal-dark: #075451;
+            --coral: #ef765e;
+            --yellow: #f5c85b;
+            --shadow: 0 18px 45px rgba(24, 35, 41, .08);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            color: var(--ink);
+            background: radial-gradient(circle at top right, #dff2ec 0, transparent 32rem), var(--paper);
+            font: 16px/1.5 Georgia, 'Times New Roman', serif;
+        }
+        a { color: inherit; text-decoration: none; }
+        .shell { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+        .topbar { padding: 24px 0; border-bottom: 1px solid var(--line); }
+        .topbar-inner, .nav { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+        .brand { font-size: 1.45rem; font-weight: bold; letter-spacing: .02em; }
+        .brand span { color: var(--coral); }
+        .nav { font-family: 'Trebuchet MS', sans-serif; font-size: .9rem; }
+        .nav a { color: var(--muted); }
+        .nav a:hover { color: var(--teal); }
+        main { padding: 58px 0 80px; }
+        h1, h2, p { margin-top: 0; }
+        h1 { font-size: clamp(2.3rem, 6vw, 4.8rem); line-height: .98; max-width: 680px; margin-bottom: 18px; }
+        h2 { font-size: 1.35rem; }
+        .eyebrow { color: var(--teal); font: bold .76rem/1.2 'Trebuchet MS', sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+        .muted { color: var(--muted); }
+        .button { display: inline-block; border: 0; border-radius: 4px; padding: 12px 18px; background: var(--teal); color: white; cursor: pointer; font: bold .85rem 'Trebuchet MS', sans-serif; }
+        .button:hover { background: var(--teal-dark); }
+        .button.secondary { background: #e8efed; color: var(--teal-dark); }
+        .button.danger { background: var(--coral); }
+        .button.small { padding: 8px 12px; font-size: .75rem; }
+        .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 36px 0; }
+        .stat { padding: 18px 20px; border-left: 4px solid var(--teal); background: var(--panel); box-shadow: var(--shadow); }
+        .stat strong { display: block; font-size: 2rem; }
+        .task-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+        .task-card { display: flex; min-height: 210px; flex-direction: column; justify-content: space-between; padding: 22px; background: var(--panel); border: 1px solid var(--line); box-shadow: var(--shadow); }
+        .task-card h2 { margin-bottom: 8px; }
+        .task-meta { display: flex; flex-wrap: wrap; gap: 7px; margin: 14px 0; font: .75rem 'Trebuchet MS', sans-serif; }
+        .tag { padding: 4px 8px; border-radius: 2px; background: #e9f3ef; color: var(--teal-dark); }
+        .tag.done { background: #e3eee5; color: #41654b; }
+        .tag.progress { background: #fff1cf; color: #76570c; }
+        .empty { padding: 42px; text-align: center; background: var(--panel); border: 1px dashed var(--line); }
+        .form-panel { max-width: 720px; padding: 30px; background: var(--panel); border: 1px solid var(--line); box-shadow: var(--shadow); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        label { display: block; margin-bottom: 6px; font: bold .8rem 'Trebuchet MS', sans-serif; }
+        input, textarea, select { width: 100%; padding: 11px 12px; border: 1px solid #cbd9d5; border-radius: 3px; color: var(--ink); background: #fbfdfc; font: inherit; }
+        input:focus, textarea:focus, select:focus { outline: 2px solid #9bd4c9; border-color: var(--teal); }
+        .field { margin-bottom: 18px; }
+        .errorlist { margin: 5px 0; padding: 0; color: #b34b3b; list-style: none; font: .8rem 'Trebuchet MS', sans-serif; }
+        footer { padding: 24px 0; color: var(--muted); border-top: 1px solid var(--line); font: .78rem 'Trebuchet MS', sans-serif; }
+        @media (max-width: 640px) {
+            .shell { width: min(100% - 28px, 1120px); }
+            .topbar-inner { align-items: flex-start; flex-direction: column; }
+            main { padding-top: 38px; }
+            .stat-grid, .form-row { grid-template-columns: 1fr; }
+            .form-panel { padding: 22px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="shell topbar-inner">
+            <a class="brand" href="{% url 'app:home' %}">hang<span>arin</span></a>
+            <nav class="nav" aria-label="Primary navigation">
+                <a href="{% url 'app:home' %}">Home</a>
+                <a class="button small" href="{% url 'app:create_task' %}">New task</a>
+            </nav>
+        </div>
+    </header>
+    <main class="shell">
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <div class="shell">A quiet place for the work ahead.</div>
+    </footer>
+</body>
+</html>

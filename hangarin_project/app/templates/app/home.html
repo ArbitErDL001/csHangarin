@@ -1,0 +1,57 @@
+{% extends 'app/base.html' %}
+
+{% block title %}Home | Hangarin{% endblock %}
+
+{% block content %}
+<section>
+    <p class="eyebrow">Your work, in view</p>
+    <h1>Make room for what matters.</h1>
+    <p class="muted">Keep the next few steps visible, then let the rest wait its turn.</p>
+    <div class="actions">
+        <a class="button" href="{% url 'app:create_task' %}">Add a task</a>
+    </div>
+</section>
+
+{% with total=tasks|length %}
+<div class="stat-grid">
+    <div class="stat"><span class="muted">All tasks</span><strong>{{ total }}</strong></div>
+    <div class="stat"><span class="muted">In progress</span><strong>{{ in_progress_count }}</strong></div>
+    <div class="stat"><span class="muted">Completed</span><strong>{{ done_count }}</strong></div>
+</div>
+{% endwith %}
+
+<section aria-labelledby="task-heading">
+    <div class="topbar-inner" style="margin-bottom: 16px;">
+        <h2 id="task-heading">Your tasks</h2>
+        <span class="muted">{{ tasks|length }} total</span>
+    </div>
+    {% if tasks %}
+        <div class="task-grid">
+            {% for task in tasks %}
+                <article class="task-card">
+                    <div>
+                        <p class="eyebrow">{% if task.category %}{{ task.category.name }}{% else %}Unsorted{% endif %}</p>
+                        <h2>{{ task.title }}</h2>
+                        {% if task.description %}<p class="muted">{{ task.description|truncatewords:22 }}</p>{% endif %}
+                        <div class="task-meta">
+                            <span class="tag {% if task.status == 'done' %}done{% elif task.status == 'in_progress' %}progress{% endif %}">{{ task.get_status_display }}</span>
+                            {% if task.priority %}<span class="tag">{{ task.priority.name }}</span>{% endif %}
+                            {% if task.deadline %}<span class="tag">Due {{ task.deadline|date:'M j' }}</span>{% endif %}
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <a class="button small secondary" href="{% url 'app:edit_task' task.id %}">Edit</a>
+                        <a class="button small danger" href="{% url 'app:delete_task' task.id %}">Delete</a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty">
+            <h2>Nothing on the board yet.</h2>
+            <p class="muted">Start with one clear, manageable task.</p>
+            <a class="button" href="{% url 'app:create_task' %}">Create your first task</a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
