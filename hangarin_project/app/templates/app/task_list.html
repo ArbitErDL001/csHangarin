@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hangarin Tasks</title>
+</head>
+<body>
+    <main>
+        <h1>Tasks</h1>
+        {% if tasks %}
+            <ul>
+                {% for task in tasks %}
+                    <li>
+                        <strong>{{ task.title }}</strong>
+                        <span>{{ task.get_status_display }}</span>
+                        {% if task.deadline %}<time datetime="{{ task.deadline|date:'Y-m-d' }}">{{ task.deadline }}</time>{% endif %}
+                        {% if task.description %}<p>{{ task.description }}</p>{% endif %}
+                        {% if task.subtasks.all %}
+                            <ul>
+                                {% for subtask in task.subtasks.all %}
+                                    <li>{{ subtask.title }}{% if subtask.status %} (done){% endif %}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No tasks yet.</p>
+        {% endif %}
+    </main>
+</body>
+</html>
