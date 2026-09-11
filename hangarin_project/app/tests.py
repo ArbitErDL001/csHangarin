@@ -27,6 +27,25 @@ class LoginPageTests(TestCase):
 		response = self.client.post(
 			reverse('account_login'),
 			{'login': 'aedl', 'password': 'aedl pass'},
+			follow=True,
 		)
 
-		self.assertRedirects(response, reverse('home'), fetch_redirect_response=False)
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response.request['PATH_INFO'], reverse('home'))
+		self.assertContains(response, 'Successfully signed in as')
+		self.assertContains(response, 'Dashboard')
+
+	def test_signup_redirects_to_login_without_email_delivery(self):
+		response = self.client.post(
+			reverse('account_signup'),
+			{
+				'username': 'newuser',
+				'email': 'newuser@example.com',
+				'password1': 'Strong-password-123!',
+				'password2': 'Strong-password-123!',
+			},
+		)
+
+		self.assertRedirects(response, reverse('account_login'), fetch_redirect_response=False)
+		self.assertTrue(get_user_model().objects.filter(username='newuser').exists())
+		self.assertNotIn('_auth_user_id', self.client.session)

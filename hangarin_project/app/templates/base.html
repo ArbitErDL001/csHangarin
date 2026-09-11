@@ -23,7 +23,7 @@
         name="viewport"
     />
 
-    <link rel="stylesheet" href="{% static 'css/dashboard-clean.css' %}?v=7">
+    <link rel="stylesheet" href="{% static 'css/dashboard-clean.css' %}?v=8">
 
     <link
         rel="stylesheet"
@@ -53,6 +53,14 @@
 
 
             <div class="header-right">
+
+                {% if messages %}
+                    <div class="header-messages messages" role="status">
+                        {% for message in messages %}
+                            <div class="alert">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
 
                 <!-- ACCOUNT MENU -->
                 <div class="account-menu">
@@ -379,26 +387,6 @@
              MAIN CONTENT
         ========================== -->
         <div class="main-panel">
-
-            {% if messages %}
-
-                <div
-                    class="content messages"
-                    role="status"
-                >
-
-                    {% for message in messages %}
-
-                        <div class="alert">
-                            {{ message }}
-                        </div>
-
-                    {% endfor %}
-
-                </div>
-
-            {% endif %}
-
 
             {% block content %}
 
