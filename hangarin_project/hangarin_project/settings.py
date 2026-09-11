@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +26,13 @@ SECRET_KEY = 'django-insecure-c!-wkpd(bgfg#8xq&pl*lt9p3e41)n2+#46&sqpkjm*kl0i1)q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'aedlhangarin.pythonanywhere.com',
+    'localhost',
+    '127.0.0.1',
+]
+
+
 
 
 # Application definition
@@ -79,7 +86,30 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'hangarin_project.wsgi.application'
 
-
+#Social account providers configuration
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': os.environ.get('GOOGLE_CLIENT_ID', ''),
+            'secret': os.environ.get('GOOGLE_CLIENT_SECRET', ''),
+            'key': '',
+        },
+    },
+    'github': {
+        'APP': {
+            'client_id': os.environ.get('GITHUB_CLIENT_ID', ''),
+            'secret': os.environ.get('GITHUB_CLIENT_SECRET', ''),
+            'key': '',
+        },
+    },
+    'facebook': {
+        'APP': {
+            'client_id': os.environ.get('FACEBOOK_CLIENT_ID', ''),
+            'secret': os.environ.get('FACEBOOK_CLIENT_SECRET', ''),
+            'key': '',
+        },
+    },
+}
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
