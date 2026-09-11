@@ -53,6 +53,22 @@ document.addEventListener('DOMContentLoaded', function () {
         themeOptions.hidden = isExpanded;
     }
 
+    function replayCurrentTabIntro() {
+        var currentPage = document.querySelector('.dashboard-content') || document.querySelector('.content');
+
+        if (!currentPage || !window.gsap) {
+            return;
+        }
+
+        var targets = currentPage.querySelectorAll(
+            '.dashboard-header, .metric-card, .dashboard-panel, .page-title, '
+            + '.search-toolbar, .sort-toolbar, .tab-card, .activity-row, '
+            + 'tbody tr, .archive-item, .pagination'
+        );
+
+        animateElements(Array.from(targets));
+    }
+
     setTheme(getSavedTheme() || 'nebula');
 
     if (themeToggle) {
@@ -61,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
     themeChoices.forEach(function (choice) {
         choice.addEventListener('click', function () {
             setTheme(choice.dataset.theme);
+            replayCurrentTabIntro();
             if (themeToggle && themeOptions) {
                 themeToggle.setAttribute('aria-expanded', 'false');
                 themeOptions.hidden = true;
