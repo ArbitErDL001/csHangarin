@@ -1,0 +1,23 @@
+{% extends 'legal/base.html' %}
+
+{% block title %}User Data Deletion{% endblock %}
+{% block heading %}User Data Deletion{% endblock %}
+
+{% block content %}
+<section class="legal-section">
+    <h2>Request deletion</h2>
+    <p>To request deletion of your Hangarin account and associated personal data, contact the Hangarin administrator with the email address used for your account. Include the subject <strong>Delete my Hangarin data</strong>.</p>
+</section>
+<section class="legal-section">
+    <h2>What happens next</h2>
+    <p>We will verify that the request belongs to you, delete or anonymize account information and social sign-in associations where applicable, and confirm when the request is complete.</p>
+</section>
+<section class="legal-section">
+    <h2>Meta callback</h2>
+    <p>This page is also available as a public callback URL for social sign-in providers. A POST request receives a JSON confirmation response, while deletion requests are reviewed to prevent unauthorized account deletion.</p>
+</section>
+<section class="legal-section">
+    <h2>Need help?</h2>
+    <p>Use the account email associated with Hangarin when submitting a deletion request so we can verify and process it.</p>
+</section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hangarin | {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body class="legal-page">
+    <main class="legal-shell">
+        <article class="legal-card">
+            <a class="legal-brand" href="{% url 'account_login' %}">Hangarin</a>
+            <p class="legal-kicker">Account and data information</p>
+            <h1>{% block heading %}{% endblock %}</h1>
+            <p class="legal-updated">Last updated: September 11, 2026</p>
+            {% block content %}{% endblock %}
+            <nav class="legal-nav" aria-label="Legal pages">
+                <a href="{% url 'user-data-deletion' %}">User Data Deletion</a>
+                <a href="{% url 'account_login' %}">Return to sign in</a>
+            </nav>
+        </article>
+    </main>
+</body>
+</html>

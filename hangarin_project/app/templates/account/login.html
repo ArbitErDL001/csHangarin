@@ -155,12 +155,6 @@
                                 <span>Continue with Google</span>
                             </a>
                         {% endif %}
-                        {% if provider.id == 'facebook' %}
-                            <a class="social-button" href="{% provider_login_url provider.id %}">
-                                <strong class="facebook-icon">f</strong>
-                                <span>Continue with Facebook</span>
-                            </a>
-                        {% endif %}
                         {% if provider.id == 'github' %}
                             <a class="social-button" href="{% provider_login_url provider.id %}">
                                 <strong class="github-icon">GH</strong>
@@ -173,10 +167,6 @@
                         <button class="social-button social-button-disabled" type="button" disabled>
                             <strong class="google-icon">G</strong>
                             <span>Continue with Google</span>
-                        </button>
-                        <button class="social-button social-button-disabled" type="button" disabled>
-                            <strong class="facebook-icon">f</strong>
-                            <span>Continue with Facebook</span>
                         </button>
                         <button class="social-button social-button-disabled" type="button" disabled>
                             <strong class="github-icon">GH</strong>

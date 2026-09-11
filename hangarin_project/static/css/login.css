@@ -495,13 +495,6 @@ body {
     font-weight: 800;
 }
 
-.facebook-icon {
-    color: #1877f2;
-    font-family: Arial, sans-serif;
-    font-size: 18px !important;
-    font-weight: 800;
-}
-
 .github-icon {
     font-size: 10px !important;
 }
@@ -781,6 +774,101 @@ body {
 
 #copy b {
     font-weight: 700;
+}
+
+
+/* =========================================
+   LEGAL PAGES
+   ========================================= */
+
+.legal-page {
+    min-height: 100vh;
+    height: auto;
+    overflow: auto;
+    padding: 32px 18px;
+
+    background:
+        linear-gradient(rgba(3, 4, 10, 0.76), rgba(3, 4, 10, 0.94)),
+        url("../img/background.png") center / cover fixed no-repeat;
+}
+
+.legal-shell {
+    width: min(760px, 100%);
+    margin: 0 auto;
+}
+
+.legal-card {
+    padding: 42px clamp(24px, 6vw, 58px);
+    background: linear-gradient(145deg, rgba(18, 20, 35, 0.97), rgba(5, 7, 14, 0.97));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    box-shadow: 0 30px 100px rgba(0, 0, 0, 0.8), 0 0 80px rgba(124, 58, 237, 0.08);
+}
+
+.legal-brand {
+    color: #fff;
+    font-size: 22px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.legal-kicker {
+    margin: 8px 0 22px;
+    color: var(--accent-light);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.7px;
+    text-transform: uppercase;
+}
+
+.legal-card h1 {
+    margin: 0;
+    font-size: clamp(28px, 5vw, 38px);
+    line-height: 1.1;
+}
+
+.legal-updated {
+    margin: 10px 0 30px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.legal-section {
+    margin-top: 24px;
+}
+
+.legal-section h2 {
+    margin: 0 0 8px;
+    color: #e9d5ff;
+    font-size: 16px;
+}
+
+.legal-section p {
+    margin: 0;
+    color: #c5c8d4;
+    font-size: 14px;
+    line-height: 1.75;
+}
+
+.legal-section a,
+.legal-nav a {
+    color: var(--accent-light);
+    text-decoration: none;
+}
+
+.legal-section a:hover,
+.legal-nav a:hover {
+    color: #ddd6fe;
+}
+
+.legal-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    margin-top: 34px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
 }
 
 

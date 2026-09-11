@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.db.models.deletion import ProtectedError
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -20,6 +20,15 @@ def service_worker(request):
 		"});\n",
 		content_type='application/javascript',
 	)
+
+
+def user_data_deletion(request):
+	if request.method == 'POST':
+		return JsonResponse({
+			'url': request.build_absolute_uri('/user-data-deletion/'),
+			'confirmation_code': 'HANGARIN-DATA-REQUEST',
+		})
+	return render(request, 'legal/user_data_deletion.html')
 
 
 def home(request):

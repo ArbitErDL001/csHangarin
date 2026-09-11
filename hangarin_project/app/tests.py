@@ -15,7 +15,6 @@ class LoginPageTests(TestCase):
 
 		self.assertEqual(response.status_code, 200)
 		self.assertContains(response, 'Continue with Google')
-		self.assertContains(response, 'Continue with Facebook')
 		self.assertContains(response, 'Continue with GitHub')
 
 	def test_login_redirects_authenticated_user_to_home(self):

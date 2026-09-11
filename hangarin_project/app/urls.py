@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('serviceworker.js', views.service_worker, name='service-worker'),
+    path('user-data-deletion/', views.user_data_deletion, name='user-data-deletion'),
     path('', views.home, name='home'),
 
     path('tasks/', views.TaskListView.as_view(), name='task-list'),
