@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="content">
+  <div class="container-fluid">
+    <h4 class="page-title d-flex justify-content-between align-items-center">
+      <span>SubTasks</span>
+      <a href="{% url 'subtask-add' %}" class="btn btn-primary btn-sm">Add SubTask</a>
+    </h4>
+    <div class="card">
+      <div class="card-body table-responsive">
+        {% include 'includes/search_form.html' %}
+        {% with current=sort_by|default:'task__title' %}
+        <div class="col-md-12">
+          <form method="get" class="row g-2 align-items-center">
+            <input type="hidden" name="q" value="{{ q }}">
+            <div class="col-auto">
+              <label for="subtaskSortSelect" class="col-form-label">Sort by</label>
+            </div>
+            <div class="col-auto">
+              <select class="form-control form-control-sm" id="subtaskSortSelect" name="sort_by" onchange="this.form.submit()">
+                <option value="task__title" {% if current == 'task__title' %}selected{% endif %}>Task</option>
+                <option value="title" {% if current == 'title' %}selected{% endif %}>Title</option>
+                <option value="status" {% if current == 'status' %}selected{% endif %}>Status</option>
+              </select>
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-primary btn-sm btn-rounded">Sort</button>
+            </div>
+          </form>
+        </div>
+        {% endwith %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Title</th>
+              <th>Status</th>
+              <th class="text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for subtask in subtasks %}
+            <tr>
+              <td>{{ subtask.task.title }}</td>
+              <td>{{ subtask.title }}</td>
+              <td>{{ subtask.status }}</td>
+              <td class="text-right">
+                <a href="{% url 'subtask-edit' subtask.pk %}" class="btn btn-sm btn-secondary">Edit</a>
+                <a href="{% url 'subtask-delete' subtask.pk %}" class="btn btn-sm btn-danger">Delete</a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4">No subtasks yet.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% include 'includes/pagination.html' %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

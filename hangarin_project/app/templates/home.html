@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="content">
+  <div class="container-fluid">
+    <h4 class="page-title">Home</h4>
+
+    <div class="row">
+      <!-- Categories -->
+      <div class="col-md-3">
+        <div class="card card-stats card-warning">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-5">
+                <div class="icon-big text-center">
+                  <i class="la la-folder"></i>
+                </div>
+              </div>
+              <div class="col-7 d-flex align-items-center">
+                <div class="numbers">
+                  <p class="card-category">Categories</p>
+                  <h4 class="card-title">{{ categories_count|default:"0" }}</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Priorities -->
+      <div class="col-md-3">
+        <div class="card card-stats card-success">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-5">
+                <div class="icon-big text-center">
+                  <i class="la la-flag"></i>
+                </div>
+              </div>
+              <div class="col-7 d-flex align-items-center">
+                <div class="numbers">
+                  <p class="card-category">Priorities</p>
+                  <h4 class="card-title">{{ priorities_count|default:"0" }}</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subtasks -->
+      <div class="col-md-3">
+        <div class="card card-stats card-danger">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-5">
+                <div class="icon-big text-center">
+                  <i class="la la-check-square"></i>
+                </div>
+              </div>
+              <div class="col-7 d-flex align-items-center">
+                <div class="numbers">
+                  <p class="card-category">Subtasks</p>
+                  <h4 class="card-title">{{ subtasks_count|default:"0" }}</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tasks -->
+      <div class="col-md-3">
+        <div class="card card-stats card-primary">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-5">
+                <div class="icon-big text-center">
+                  <i class="la la-tasks"></i>
+                </div>
+              </div>
+              <div class="col-7 d-flex align-items-center">
+                <div class="numbers">
+                  <p class="card-category">Tasks</p>
+                  <h4 class="card-title">{{ tasks_count|default:"0" }}</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="col-md-3">
+        <div class="card card-stats card-info">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-5">
+                <div class="icon-big text-center">
+                  <i class="la la-sticky-note"></i>
+                </div>
+              </div>
+              <div class="col-7 d-flex align-items-center">
+                <div class="numbers">
+                  <p class="card-category">Notes</p>
+                  <h4 class="card-title">{{ notes_count|default:"0" }}</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div> 
+</div> 
+{% endblock %}

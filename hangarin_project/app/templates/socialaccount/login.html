@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% load i18n %}
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Confirm Google Login</title>
+
+</head>
+<body>
+  <div class="auth-card">
+    <h3 class="mb-4">Confirm Sign In</h3>
+    <p class="mb-3">
+      You are about to sign in using your <strong>{{ provider.name }}</strong> account.
+    </p>
+
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary btn-block mb-3">
+        Continue with {{ provider.name }}
+      </button>
+    </form>
+
+    <a href="{% url 'account_login' %}" class="btn btn-outline-secondary btn-block">
+      Cancel
+    </a>
+  </div>
+</body>
+</html>
