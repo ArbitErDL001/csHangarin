@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
+    function finishLoading() {
+        document.body.classList.remove('dashboard-loading');
+    }
+
     document.querySelectorAll('.messages').forEach(function (messageGroup) {
         window.setTimeout(function () {
             messageGroup.classList.add('is-dismissing');
@@ -204,6 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var page = document.querySelector('.dashboard-content') || document.querySelector('.content');
 
     if (!page) {
+        finishLoading();
         return;
     }
 
@@ -330,6 +335,8 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
+
+    finishLoading();
 
     document.querySelectorAll('.sidebar .nav-item a').forEach(function (link) {
         if (link.pathname === window.location.pathname) {

@@ -20,11 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
      * =========================================
      */
 
-    setTimeout(() => {
-        if (card) {
-            card.classList.add("show");
-        }
-    }, 400);
+    if (card) {
+        card.classList.add("show");
+    }
+
+    document.body.classList.remove("login-loading");
 
 
     /*

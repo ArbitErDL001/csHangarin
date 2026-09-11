@@ -1,0 +1,46 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+env/
+.venv/
+venv/
+ENV/
+
+# Django and local development
+*.log
+.local/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Coverage and test output
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/
+
+# Packaging/build output
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Editors and operating system files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Local tooling
+.mypy_cache/
+.pyre/
+.ruff_cache/

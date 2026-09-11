@@ -45,6 +45,10 @@ body {
     overflow: hidden;
 }
 
+.login-loading .login-card {
+    visibility: hidden;
+}
+
 
 /* =========================================
    BACKGROUND

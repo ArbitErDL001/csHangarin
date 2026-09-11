@@ -34,7 +34,7 @@ class LoginPageTests(TestCase):
 		self.assertContains(response, 'Successfully signed in as')
 		self.assertContains(response, 'Dashboard')
 
-	def test_signup_redirects_to_login_without_email_delivery(self):
+	def test_signup_redirects_to_dashboard_without_email_delivery(self):
 		response = self.client.post(
 			reverse('account_signup'),
 			{
@@ -45,6 +45,6 @@ class LoginPageTests(TestCase):
 			},
 		)
 
-		self.assertRedirects(response, reverse('account_login'), fetch_redirect_response=False)
+		self.assertRedirects(response, reverse('home'), fetch_redirect_response=False)
 		self.assertTrue(get_user_model().objects.filter(username='newuser').exists())
-		self.assertNotIn('_auth_user_id', self.client.session)
+		self.assertIn('_auth_user_id', self.client.session)

@@ -25,6 +25,11 @@
     --transition: 150ms ease;
 }
 
+.dashboard-loading .dashboard-content,
+.dashboard-loading .content {
+    visibility: hidden;
+}
+
 html[data-theme="forest"] {
     --color-page: #10251d;
     --color-secondary-page: #163428;
