@@ -1,0 +1,158 @@
+{% load static socialaccount %}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Hangarin | Create account</title>
+
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+
+<body class="login-page signup-page">
+
+    <div class="background-wall" aria-hidden="true">
+        <div class="vertical vertical-0">
+            <div class="horizontal sports"></div>
+            <div class="horizontal nature"></div>
+            <div class="horizontal business"></div>
+            <div class="horizontal people"></div>
+            <div class="horizontal technics"></div>
+            <div class="horizontal fashion"></div>
+        </div>
+        <div class="vertical vertical-1">
+            <div class="horizontal city"></div>
+            <div class="horizontal sports"></div>
+            <div class="horizontal animals"></div>
+            <div class="horizontal nature"></div>
+            <div class="horizontal people"></div>
+            <div class="horizontal business"></div>
+        </div>
+        <div class="vertical vertical-2">
+            <div class="horizontal fashion"></div>
+            <div class="horizontal animals"></div>
+            <div class="horizontal city"></div>
+            <div class="horizontal technics"></div>
+            <div class="horizontal sports"></div>
+            <div class="horizontal nature"></div>
+        </div>
+        <div class="vertical vertical-3">
+            <div class="horizontal people"></div>
+            <div class="horizontal business"></div>
+            <div class="horizontal fashion"></div>
+            <div class="horizontal city"></div>
+            <div class="horizontal animals"></div>
+            <div class="horizontal sports"></div>
+        </div>
+        <div class="vertical vertical-4">
+            <div class="horizontal nature"></div>
+            <div class="horizontal technics"></div>
+            <div class="horizontal people"></div>
+            <div class="horizontal animals"></div>
+            <div class="horizontal business"></div>
+            <div class="horizontal city"></div>
+        </div>
+        <div class="vertical vertical-5">
+            <div class="horizontal sports"></div>
+            <div class="horizontal fashion"></div>
+            <div class="horizontal nature"></div>
+            <div class="horizontal technics"></div>
+            <div class="horizontal people"></div>
+            <div class="horizontal animals"></div>
+        </div>
+        <div class="vertical vertical-6">
+            <div class="horizontal city"></div>
+            <div class="horizontal business"></div>
+            <div class="horizontal sports"></div>
+            <div class="horizontal people"></div>
+            <div class="horizontal fashion"></div>
+            <div class="horizontal nature"></div>
+        </div>
+        <div class="vertical vertical-7">
+            <div class="horizontal technics"></div>
+            <div class="horizontal animals"></div>
+            <div class="horizontal city"></div>
+            <div class="horizontal business"></div>
+            <div class="horizontal sports"></div>
+            <div class="horizontal people"></div>
+        </div>
+        <div class="vertical vertical-8">
+            <div class="horizontal fashion"></div>
+            <div class="horizontal nature"></div>
+            <div class="horizontal animals"></div>
+            <div class="horizontal technics"></div>
+            <div class="horizontal city"></div>
+            <div class="horizontal business"></div>
+        </div>
+        <div class="vertical vertical-9">
+            <div class="horizontal people"></div>
+            <div class="horizontal sports"></div>
+            <div class="horizontal fashion"></div>
+            <div class="horizontal animals"></div>
+            <div class="horizontal nature"></div>
+            <div class="horizontal technics"></div>
+        </div>
+    </div>
+
+    <div class="login-mask"></div>
+
+    <main class="login-shell">
+        <section class="login-card signup-card" aria-labelledby="signup-title">
+            <div
+                class="login-circle"
+                style="background-image: url('{% static 'img/background.png' %}');"
+                aria-hidden="true"
+            ></div>
+
+            <div class="login-content">
+                <div class="login-brand">
+                    <span class="brand-icon"></span>
+                    <span>Hangarin</span>
+                </div>
+
+                <p class="login-kicker">Personal command center</p>
+                <h1 id="signup-title">Create account</h1>
+                <p class="login-subtitle">Set up your account to organize the work ahead.</p>
+
+                <form method="post" action="{% url 'account_signup' %}" class="login-form signup-form">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="login-error">{{ form.non_field_errors }}</div>
+                    {% endif %}
+
+                    {% for field in form %}
+                        {{ field.errors }}
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small class="signup-help">{{ field.help_text }}</small>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+                    {% endif %}
+
+                    <button class="login-submit" type="submit">Create account</button>
+                </form>
+
+                <p class="login-footer">
+                    Already have an account?
+                    <a href="{% url 'account_login' %}">Sign in</a>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <div id="copy">
+        <a href="https://twitter.com/igcorreia" target="_blank" rel="noopener noreferrer">
+            Crafted by: <b>@AEDL.ayym</b>
+        </a>
+    </div>
+
+    <script src="{% static 'js/login.js' %}"></script>
+</body>
+</html>

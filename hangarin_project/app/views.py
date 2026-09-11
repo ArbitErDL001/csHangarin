@@ -1,23 +1,88 @@
+from django.contrib import messages
+from django.core.paginator import Paginator
 from django.db.models import Q
-from django.shortcuts import render
+from django.db.models.deletion import ProtectedError
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from .forms import CategoryForm, NoteForm, PriorityForm, SubTaskForm, TaskForm
 from .models import Category, Note, Priority, SubTask, Task
 
 
+def service_worker(request):
+	return HttpResponse(
+		"self.addEventListener('install', function () { self.skipWaiting(); });\n"
+		"self.addEventListener('activate', function (event) {"
+		" event.waitUntil(self.clients.claim());"
+		"});\n",
+		content_type='application/javascript',
+	)
+
+
 def home(request):
+	if not request.user.is_authenticated:
+		return redirect('account_login')
+
+	active_tasks = Task.objects.filter(is_deleted=False)
+	archive_items = [
+		{'status': 'Deleted', 'title': task.title, 'subtitle': ''}
+		for task in Task.objects.filter(is_deleted=True)
+	]
+	archive_items.extend(
+		{'status': 'Done', 'title': task.title, 'subtitle': ''}
+		for task in active_tasks.filter(status=Task.Status.DONE)
+	)
+	archive_items.extend(
+		{'status': 'Subtask done', 'title': subtask.title, 'subtitle': subtask.task.title}
+		for subtask in SubTask.objects.filter(status=True).select_related('task')
+	)
+	archive_paginator = Paginator(archive_items, 5)
+	archive_page = archive_paginator.get_page(request.GET.get('archive_page', 1))
 	return render(request, 'home.html', {
 		'categories_count': Category.objects.count(),
 		'priorities_count': Priority.objects.count(),
 		'subtasks_count': SubTask.objects.count(),
-		'tasks_count': Task.objects.count(),
+		'tasks_count': active_tasks.count(),
 		'notes_count': Note.objects.count(),
+		'archive_items': archive_page.object_list,
+		'archive_page_obj': archive_page,
+		'archive_paginator': archive_paginator,
+		'archive_is_paginated': archive_page.has_other_pages(),
 	})
 
 
+def redirect_to_next(request, default):
+	return_url = request.POST.get('next') or request.GET.get('next')
+	if return_url and url_has_allowed_host_and_scheme(
+		return_url,
+		allowed_hosts={request.get_host()},
+		require_https=request.is_secure(),
+	):
+		return redirect(return_url)
+	return redirect(default)
+
+
+@require_POST
+def mark_task_done(request, pk):
+	task = get_object_or_404(Task, pk=pk, is_deleted=False)
+	task.status = Task.Status.DONE
+	task.save(update_fields=('status', 'updated_at'))
+	return redirect_to_next(request, '/tasks/')
+
+
+@require_POST
+def mark_subtask_done(request, pk):
+	subtask = get_object_or_404(SubTask, pk=pk)
+	subtask.status = True
+	subtask.save(update_fields=('status',))
+	return redirect_to_next(request, '/subtasks/')
+
+
 class SearchSortListView(ListView):
-	paginate_by = 10
+	paginate_by = 5
 	search_fields = ()
 	allowed_sort_fields = ()
 	default_sort = 'name'
@@ -50,6 +115,9 @@ class TaskListView(SearchSortListView):
 	search_fields = ('title', 'description')
 	allowed_sort_fields = ('title', 'status', 'deadline', 'priority__name', 'category__name', 'created_at', '-created_at')
 	default_sort = 'category__name'
+
+	def get_queryset(self):
+		return super().get_queryset().filter(is_deleted=False)
 
 
 class SubTaskListView(SearchSortListView):
@@ -100,10 +168,39 @@ class TaskUpdateView(UpdateView):
 	success_url = '/tasks/'
 
 
-class TaskDeleteView(DeleteView):
+class ReturnToTabDeleteMixin:
+	def get_success_url(self):
+		return_url = self.request.POST.get('next') or self.request.GET.get('next')
+		if return_url and url_has_allowed_host_and_scheme(
+			return_url,
+			allowed_hosts={self.request.get_host()},
+			require_https=self.request.is_secure(),
+		):
+			return return_url
+		return super().get_success_url()
+
+	def form_valid(self, form):
+		try:
+			self.object.delete()
+		except ProtectedError:
+			messages.error(
+				self.request,
+				f'"{self.object}" cannot be deleted because it is still used by another item.',
+			)
+		return redirect(self.get_success_url())
+
+		return redirect(self.get_success_url())
+
+
+class TaskDeleteView(ReturnToTabDeleteMixin, DeleteView):
 	model = Task
 	template_name = 'hangarin/task_confirm_delete.html'
 	success_url = '/tasks/'
+
+	def form_valid(self, form):
+		self.object.is_deleted = True
+		self.object.save(update_fields=('is_deleted', 'updated_at'))
+		return redirect(self.get_success_url())
 
 
 class SubTaskCreateView(CreateView):
@@ -120,7 +217,7 @@ class SubTaskUpdateView(UpdateView):
 	success_url = '/subtasks/'
 
 
-class SubTaskDeleteView(DeleteView):
+class SubTaskDeleteView(ReturnToTabDeleteMixin, DeleteView):
 	model = SubTask
 	template_name = 'hangarin/subtask_confirm_delete.html'
 	success_url = '/subtasks/'
@@ -140,7 +237,7 @@ class NoteUpdateView(UpdateView):
 	success_url = '/notes/'
 
 
-class NoteDeleteView(DeleteView):
+class NoteDeleteView(ReturnToTabDeleteMixin, DeleteView):
 	model = Note
 	template_name = 'hangarin/note_confirm_delete.html'
 	success_url = '/notes/'
@@ -160,7 +257,7 @@ class CategoryUpdateView(UpdateView):
 	success_url = '/categories/'
 
 
-class CategoryDeleteView(DeleteView):
+class CategoryDeleteView(ReturnToTabDeleteMixin, DeleteView):
 	model = Category
 	template_name = 'hangarin/category_confirm_delete.html'
 	success_url = '/categories/'
@@ -180,7 +277,7 @@ class PriorityUpdateView(UpdateView):
 	success_url = '/priorities/'
 
 
-class PriorityDeleteView(DeleteView):
+class PriorityDeleteView(ReturnToTabDeleteMixin, DeleteView):
 	model = Priority
 	template_name = 'hangarin/priority_confirm_delete.html'
 	success_url = '/priorities/'

@@ -4,7 +4,7 @@
     <ul class="pagination">
       {% if page_obj.number > 1 %}
       <li class="page-item">
-        <a class="page-link" href="?page=1{% if q %}&q={{ q|urlencode }}{% endif %}{% if sort_by %}&sort_by={{ sort_by|urlencode }}{% endif %}">First</a>
+        <a class="page-link" href="?{% if page_param %}{{ page_param }}{% else %}page{% endif %}=1{% if q %}&q={{ q|urlencode }}{% endif %}{% if sort_by %}&sort_by={{ sort_by|urlencode }}{% endif %}">First</a>
       </li>
       {% else %}
       <li class="page-item disabled">
@@ -14,7 +14,7 @@
 
       {% if page_obj.has_previous %}
       <li class="page-item">
-        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if sort_by %}&sort_by={{ sort_by|urlencode }}{% endif %}">Prev</a>
+        <a class="page-link" href="?{% if page_param %}{{ page_param }}{% else %}page{% endif %}={{ page_obj.previous_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if sort_by %}&sort_by={{ sort_by|urlencode }}{% endif %}">Prev</a>
       </li>
       {% else %}
       <li class="page-item disabled">
@@ -32,14 +32,14 @@
         </li>
         {% elif page_num > page_obj.number|add:'-3' and page_num < page_obj.number|add:'3' %}
         <li class="page-item">
-          <a class="page-link" href="?page={{ page_num }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if sort_by %}&sort_by={{ sort_by|urlencode }}{% endif %}">{{ page_num }}</a>
+          <a class="page-link" href="?{% if page_param %}{{ page_param }}{% else %}page{% endif %}={{ page_num }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if sort_by %}&sort_by={{ sort_by|urlencode }}{% endif %}">{{ page_num }}</a>
         </li>
         {% endif %}
       {% endfor %}
 
       {% if page_obj.has_next %}
       <li class="page-item">
-        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if sort_by %}&sort_by={{ sort_by|urlencode }}{% endif %}">Next</a>
+        <a class="page-link" href="?{% if page_param %}{{ page_param }}{% else %}page{% endif %}={{ page_obj.next_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if sort_by %}&sort_by={{ sort_by|urlencode }}{% endif %}">Next</a>
       </li>
       {% else %}
       <li class="page-item disabled">
@@ -49,7 +49,7 @@
 
       {% if page_obj.number != paginator.num_pages %}
       <li class="page-item">
-        <a class="page-link" href="?page={{ paginator.num_pages }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if sort_by %}&sort_by={{ sort_by|urlencode }}{% endif %}">Last</a>
+        <a class="page-link" href="?{% if page_param %}{{ page_param }}{% else %}page{% endif %}={{ paginator.num_pages }}{% if q %}&q={{ q|urlencode }}{% endif %}{% if sort_by %}&sort_by={{ sort_by|urlencode }}{% endif %}">Last</a>
       </li>
       {% else %}
       <li class="page-item disabled">
@@ -59,7 +59,7 @@
     </ul>
   </nav>
 
-  <div class="fw-normal small mt-4 mt-lg-0">
+  <div class="pagination-summary">
     Showing <b>{{ object_list.count }}</b> out of <b>{{ paginator.count }}</b> entries
   </div>
 </div>

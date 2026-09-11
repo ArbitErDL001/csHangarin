@@ -8,9 +8,22 @@ class TaskForm(forms.ModelForm):
         model = Task
         fields = ('title', 'description', 'status', 'deadline', 'priority', 'category')
         widgets = {
-            'deadline': forms.DateInput(attrs={'type': 'date'}),
+            'deadline': forms.DateTimeInput(
+                format='%Y-%m-%d %H:%M',
+                attrs={
+                    'type': 'text',
+                    'id': 'deadlinePicker',
+                    'placeholder': 'Choose date and time',
+                    'autocomplete': 'off',
+                    'readonly': 'readonly',
+                },
+            ),
             'description': forms.Textarea(attrs={'rows': 5}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['deadline'].input_formats = ('%Y-%m-%d %H:%M',)
 
 
 class SubTaskForm(forms.ModelForm):

@@ -1,116 +1,114 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="content">
-  <div class="container-fluid">
-    <h4 class="page-title">Home</h4>
-
-    <div class="row">
-      <!-- Categories -->
-      <div class="col-md-3">
-        <div class="card card-stats card-warning">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-5">
-                <div class="icon-big text-center">
-                  <i class="la la-folder"></i>
-                </div>
-              </div>
-              <div class="col-7 d-flex align-items-center">
-                <div class="numbers">
-                  <p class="card-category">Categories</p>
-                  <h4 class="card-title">{{ categories_count|default:"0" }}</h4>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Priorities -->
-      <div class="col-md-3">
-        <div class="card card-stats card-success">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-5">
-                <div class="icon-big text-center">
-                  <i class="la la-flag"></i>
-                </div>
-              </div>
-              <div class="col-7 d-flex align-items-center">
-                <div class="numbers">
-                  <p class="card-category">Priorities</p>
-                  <h4 class="card-title">{{ priorities_count|default:"0" }}</h4>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Subtasks -->
-      <div class="col-md-3">
-        <div class="card card-stats card-danger">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-5">
-                <div class="icon-big text-center">
-                  <i class="la la-check-square"></i>
-                </div>
-              </div>
-              <div class="col-7 d-flex align-items-center">
-                <div class="numbers">
-                  <p class="card-category">Subtasks</p>
-                  <h4 class="card-title">{{ subtasks_count|default:"0" }}</h4>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tasks -->
-      <div class="col-md-3">
-        <div class="card card-stats card-primary">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-5">
-                <div class="icon-big text-center">
-                  <i class="la la-tasks"></i>
-                </div>
-              </div>
-              <div class="col-7 d-flex align-items-center">
-                <div class="numbers">
-                  <p class="card-category">Tasks</p>
-                  <h4 class="card-title">{{ tasks_count|default:"0" }}</h4>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Notes -->
-      <div class="col-md-3">
-        <div class="card card-stats card-info">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-5">
-                <div class="icon-big text-center">
-                  <i class="la la-sticky-note"></i>
-                </div>
-              </div>
-              <div class="col-7 d-flex align-items-center">
-                <div class="numbers">
-                  <p class="card-category">Notes</p>
-                  <h4 class="card-title">{{ notes_count|default:"0" }}</h4>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+<main class="dashboard-content">
+  <header class="dashboard-header">
+    <div>
+      <p class="eyebrow">Hangarin overview</p>
+      <h1>Dashboard</h1>
     </div>
-  </div> 
-</div> 
+    <a class="dashboard-action" href="{% url 'task-add' %}">Add task</a>
+  </header>
+
+  <section class="metric-grid" aria-label="Task summary">
+    <a class="metric-card metric-card-primary" href="{% url 'task-list' %}">
+      <span class="metric-label">Tasks</span>
+      <strong>{{ tasks_count|default:'0' }}</strong>
+      <span class="metric-detail">All active work</span>
+    </a>
+    <a class="metric-card" href="{% url 'category-list' %}">
+      <span class="metric-label">Categories</span>
+      <strong>{{ categories_count|default:'0' }}</strong>
+      <span class="metric-detail">Ways to organize</span>
+    </a>
+    <a class="metric-card" href="{% url 'priority-list' %}">
+      <span class="metric-label">Priorities</span>
+      <strong>{{ priorities_count|default:'0' }}</strong>
+      <span class="metric-detail">Levels of focus</span>
+    </a>
+    <a class="metric-card" href="{% url 'note-list' %}">
+      <span class="metric-label">Notes</span>
+      <strong>{{ notes_count|default:'0' }}</strong>
+      <span class="metric-detail">Thoughts captured</span>
+    </a>
+  </section>
+
+  <section class="dashboard-grid">
+    <article class="dashboard-panel activity-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Progress</p>
+          <h2>Work activity</h2>
+        </div>
+        <span class="panel-period">This month</span>
+      </div>
+      <div class="activity-list" aria-label="Activity by dashboard section">
+        <a class="activity-row" href="{% url 'category-list' %}">
+          <span class="activity-name">Categories</span>
+          <span class="activity-track"><span class="activity-progress-fill" data-progress="{{ categories_count|default:'0' }}"></span></span>
+          <strong>{{ categories_count|default:'0' }}</strong>
+        </a>
+        <a class="activity-row" href="{% url 'priority-list' %}">
+          <span class="activity-name">Priorities</span>
+          <span class="activity-track"><span class="activity-progress-fill" data-progress="{{ priorities_count|default:'0' }}"></span></span>
+          <strong>{{ priorities_count|default:'0' }}</strong>
+        </a>
+        <a class="activity-row" href="{% url 'task-list' %}">
+          <span class="activity-name">Tasks</span>
+          <span class="activity-track"><span class="activity-progress-fill" data-progress="{{ tasks_count|default:'0' }}"></span></span>
+          <strong>{{ tasks_count|default:'0' }}</strong>
+        </a>
+        <a class="activity-row" href="{% url 'subtask-list' %}">
+          <span class="activity-name">Subtasks</span>
+          <span class="activity-track"><span class="activity-progress-fill" data-progress="{{ subtasks_count|default:'0' }}"></span></span>
+          <strong>{{ subtasks_count|default:'0' }}</strong>
+        </a>
+        <a class="activity-row" href="{% url 'note-list' %}">
+          <span class="activity-name">Notes</span>
+          <span class="activity-track"><span class="activity-progress-fill" data-progress="{{ notes_count|default:'0' }}"></span></span>
+          <strong>{{ notes_count|default:'0' }}</strong>
+        </a>
+      </div>
+    </article>
+
+    <article class="dashboard-panel progress-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Availability</p>
+          <h2>Tasks available</h2>
+        </div>
+      </div>
+      <div class="donut-row">
+        <div class="donut donut-blue" data-count="{{ tasks_count|default:'0' }}" data-color="var(--color-blue)"><span>{{ tasks_count|default:'0' }}</span></div>
+        <div class="donut donut-cyan" data-count="{{ subtasks_count|default:'0' }}" data-color="var(--color-cyan)"><span>{{ subtasks_count|default:'0' }}</span></div>
+      </div>
+      <div class="donut-labels">
+        <span><i class="legend-blue"></i> Tasks</span>
+        <span><i class="legend-cyan"></i> Subtasks</span>
+      </div>
+    </article>
+  </section>
+
+  <section class="dashboard-panel archive-panel">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">Archive</p>
+        <h2>Trash &amp; completed</h2>
+      </div>
+      <span class="trash-can" aria-label="Trash can" role="img">Trash</span>
+    </div>
+    <div class="archive-list">
+      {% for item in archive_items %}
+      <div class="archive-item {% if item.status == 'Deleted' %}archive-item-deleted{% else %}archive-item-done{% endif %}">
+        <span class="archive-status">{{ item.status }}</span>
+        <span>{{ item.title }}{% if item.subtitle %} <small>({{ item.subtitle }})</small>{% endif %}</span>
+      </div>
+      {% empty %}
+      <p class="archive-empty">Deleted and completed tasks will appear here.</p>
+      {% endfor %}
+      {% with is_paginated=archive_is_paginated page_obj=archive_page_obj paginator=archive_paginator object_list=archive_items page_param='archive_page' %}
+        {% include 'includes/pagination.html' %}
+      {% endwith %}
+    </div>
+  </section>
+</main>
 {% endblock %}

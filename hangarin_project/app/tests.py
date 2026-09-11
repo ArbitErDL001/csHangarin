@@ -1,3 +1,32 @@
+from django.contrib.auth import get_user_model
+from django.urls import reverse
 from django.test import TestCase
 
-# Create your tests here.
+
+class LoginPageTests(TestCase):
+	def test_service_worker_endpoint_returns_javascript(self):
+		response = self.client.get('/serviceworker.js')
+
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response['Content-Type'], 'application/javascript')
+
+	def test_login_page_renders_without_social_apps(self):
+		response = self.client.get(reverse('account_login'))
+
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, 'Continue with Google')
+		self.assertContains(response, 'Continue with Facebook')
+		self.assertContains(response, 'Continue with GitHub')
+
+	def test_login_redirects_authenticated_user_to_home(self):
+		get_user_model().objects.create_user(
+			username='aedl',
+			password='aedl pass',
+		)
+
+		response = self.client.post(
+			reverse('account_login'),
+			{'login': 'aedl', 'password': 'aedl pass'},
+		)
+
+		self.assertRedirects(response, reverse('home'), fetch_redirect_response=False)

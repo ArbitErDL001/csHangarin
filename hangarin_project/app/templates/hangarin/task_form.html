@@ -19,12 +19,16 @@
   </div>
 </div>
 
-<!-- Flatpickr activation -->
 <script>
-  flatpickr("#deadlinePicker", {
-    enableTime: true,
-    dateFormat: "Y-m-d H:i",
-    time_24hr: true
-  });
+  if (typeof flatpickr === 'function') {
+    flatpickr('#deadlinePicker', {
+      enableTime: true,
+      dateFormat: 'Y-m-d H:i',
+      time_24hr: true,
+      minuteIncrement: 5,
+      allowInput: false,
+      clickOpens: true
+    });
+  }
 </script>
 {% endblock %}

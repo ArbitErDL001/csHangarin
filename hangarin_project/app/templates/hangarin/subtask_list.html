@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="content">
-  <div class="container-fluid">
+<main class="content tab-page tab-page-subtasks">
+  <div class="container-fluid tab-container">
     <h4 class="page-title d-flex justify-content-between align-items-center">
       <span>SubTasks</span>
       <a href="{% url 'subtask-add' %}" class="btn btn-primary btn-sm">Add SubTask</a>
     </h4>
-    <div class="card">
+    <section class="card tab-card">
       <div class="card-body table-responsive">
         {% include 'includes/search_form.html' %}
         {% with current=sort_by|default:'task__title' %}
-        <div class="col-md-12">
+        <div class="sort-toolbar">
           <form method="get" class="row g-2 align-items-center">
             <input type="hidden" name="q" value="{{ q }}">
             <div class="col-auto">
@@ -46,7 +46,14 @@
               <td>{{ subtask.status }}</td>
               <td class="text-right">
                 <a href="{% url 'subtask-edit' subtask.pk %}" class="btn btn-sm btn-secondary">Edit</a>
-                <a href="{% url 'subtask-delete' subtask.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                {% if not subtask.status %}
+                <form class="row-action-form" method="post" action="{% url 'subtask-done' subtask.pk %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                  <button type="submit" class="btn btn-sm btn-success">Mark done</button>
+                </form>
+                {% endif %}
+                <a href="{% url 'subtask-delete' subtask.pk %}?next={{ request.get_full_path|urlencode }}" class="btn btn-sm btn-danger">Delete</a>
               </td>
             </tr>
             {% empty %}
@@ -58,7 +65,7 @@
         </table>
         {% include 'includes/pagination.html' %}
       </div>
-    </div>
+    </section>
   </div>
-</div>
+</main>
 {% endblock %}
