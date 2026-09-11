@@ -2,6 +2,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const card = document.querySelector(".login-card");
     const columns = document.querySelectorAll(".vertical");
+    const backgroundStateKey = "hangarin-background-positions";
+
+    let savedPositions = [];
+
+    try {
+        savedPositions = JSON.parse(
+            sessionStorage.getItem(backgroundStateKey) || "[]"
+        );
+    } catch (error) {
+        savedPositions = [];
+    }
 
     /*
      * =========================================
@@ -44,9 +55,11 @@ document.addEventListener("DOMContentLoaded", () => {
             ? -1
             : 1;
 
-        let position = direction === -1
-            ? -900
-            : -400;
+        let position = Number.isFinite(savedPositions[index])
+            ? savedPositions[index]
+            : direction === -1
+                ? -900
+                : -400;
 
         let lastTime = performance.now();
 
@@ -74,12 +87,25 @@ document.addEventListener("DOMContentLoaded", () => {
             column.style.transform =
                 `translate3d(0, ${position}px, 0)`;
 
+            savedPositions[index] = position;
+
             requestAnimationFrame(animate);
         }
 
 
         requestAnimationFrame(animate);
 
+    });
+
+
+    window.addEventListener("pagehide", () => {
+        try {
+            sessionStorage.setItem(
+                backgroundStateKey,
+                JSON.stringify(savedPositions)
+            );
+        } catch (error) {
+        }
     });
 
 
