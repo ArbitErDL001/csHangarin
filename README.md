@@ -20,7 +20,6 @@ csHangarin provides a complete user authentication system.
 - 🚪 Secure logout
 - 🌐 Optional social login
   - Google
-  - Facebook
   - GitHub
 
 Users can start with traditional username/password authentication and enable OAuth providers when their credentials are configured.
