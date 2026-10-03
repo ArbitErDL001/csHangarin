@@ -27,6 +27,11 @@
 
 .dashboard-loading .dashboard-content,
 .dashboard-loading .content {
+    visibility: visible;
+}
+
+.dashboard-loading .dashboard-content > *,
+.dashboard-loading .content > * {
     visibility: hidden;
 }
 
@@ -138,8 +143,37 @@ html[data-theme="light"] {
 body {
     margin: 0;
     background: var(--color-page);
+    background-image: url('../img/background.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
     color: var(--color-ink);
     font-family: Arial, sans-serif;
+}
+
+html[data-theme="nebula"] body {
+    background-image: url('../img/background.png');
+}
+
+html[data-theme="forest"] body {
+    background-image: url('../img/background2.jpg');
+}
+
+html[data-theme="desert"] body {
+    background-image: url('../img/background3.jpg');
+}
+
+html[data-theme="sea"] body {
+    background-image: url('../img/background4.jpg');
+}
+
+html[data-theme="crimson"] body {
+    background-image: url('../img/background5.jpg');
+}
+
+html[data-theme="light"] body {
+    background-image: url('../img/background.png');
 }
 
 .main-panel {
@@ -718,36 +752,7 @@ html[data-theme="light"] .theme-options {
 .dashboard-content {
     min-height: calc(100vh - 72px);
     padding: var(--content-padding);
-    background-color: var(--color-page);
-    background-image: url('../img/background.png');
-    background-position: center;
-    background-size: cover;
-    background-attachment: fixed;
-}
-
-html[data-theme="nebula"] .content,
-html[data-theme="nebula"] .dashboard-content {
-    background-image: url('../img/background.png');
-}
-
-html[data-theme="forest"] .content,
-html[data-theme="forest"] .dashboard-content {
-    background-image: url('../img/background2.jpg');
-}
-
-html[data-theme="desert"] .content,
-html[data-theme="desert"] .dashboard-content {
-    background-image: url('../img/background3.jpg');
-}
-
-html[data-theme="sea"] .content,
-html[data-theme="sea"] .dashboard-content {
-    background-image: url('../img/background4.jpg');
-}
-
-html[data-theme="crimson"] .content,
-html[data-theme="crimson"] .dashboard-content {
-    background-image: url('../img/background5.jpg');
+    background: transparent;
 }
 
 .content .container-fluid {
@@ -1356,6 +1361,10 @@ html[data-theme="crimson"] .dashboard-content {
     opacity: 0;
 }
 
+.sidebar-toggle {
+    display: none;
+}
+
 /* Responsive layout */
 @media (max-width: 1000px) {
     .metric-grid {
@@ -1369,14 +1378,78 @@ html[data-theme="crimson"] .dashboard-content {
 
 @media (max-width: 768px) {
     .sidebar {
-        position: static;
-        width: auto;
-        min-height: auto;
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 30;
+        width: 56px;
+        padding: 10px 0;
+        transition: width 220ms ease;
+    }
+
+    .sidebar.is-expanded {
+        width: 220px;
     }
 
     .main-panel,
     .main-header {
-        margin-left: 0;
+        margin-left: 56px;
+    }
+
+    .sidebar-toggle {
+        position: absolute;
+        top: 12px;
+        left: 10px;
+        z-index: 40;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        border: 1px solid var(--color-border);
+        border-radius: 10px;
+        background: var(--color-panel);
+        color: var(--color-ink);
+        cursor: pointer;
+    }
+
+    .sidebar .sidebar-wrapper {
+        width: 100%;
+        display: none;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 200ms ease;
+    }
+
+    .sidebar.is-expanded .sidebar-wrapper {
+        display: block;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .sidebar:not(.is-expanded) {
+        overflow: hidden;
+    }
+
+    .sidebar:not(.is-expanded) .user,
+    .sidebar:not(.is-expanded) .nav,
+    .sidebar:not(.is-expanded) .user .info,
+    .sidebar:not(.is-expanded) .nav-item {
+        display: none;
+    }
+
+    .sidebar.is-expanded .user {
+        display: flex;
+        margin-top: 52px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .sidebar.is-expanded .nav {
+        display: flex;
+        margin-top: 8px;
     }
 
     .main-header {

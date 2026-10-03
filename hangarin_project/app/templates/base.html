@@ -23,7 +23,7 @@
         name="viewport"
     />
 
-    <link rel="stylesheet" href="{% static 'css/dashboard-clean.css' %}?v=8">
+    <link rel="stylesheet" href="{% static 'css/dashboard-clean.css' %}?v=10">
 
     <link
         rel="stylesheet"
@@ -188,6 +188,15 @@
              SIDEBAR
         ========================== -->
         <div class="sidebar">
+
+            <button
+                class="sidebar-toggle"
+                type="button"
+                aria-label="Maximize sidebar"
+                aria-expanded="false"
+            >
+                ΛΞ
+            </button>
 
             <div class="scrollbar-inner sidebar-wrapper">
 
@@ -401,35 +410,9 @@
          JAVASCRIPT
     ========================== -->
 
-    <script src="{% static 'js/core/jquery.3.2.1.min.js' %}"></script>
-
-    <script src="{% static 'js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js' %}"></script>
-
-    <script src="{% static 'js/core/popper.min.js' %}"></script>
-
-    <script src="{% static 'js/core/bootstrap.min.js' %}"></script>
-
-    <script src="{% static 'js/plugin/chartist/chartist.min.js' %}"></script>
-
-    <script src="{% static 'js/plugin/chartist/plugin/chartist-plugin-tooltip.min.js' %}"></script>
-
-    <script src="{% static 'js/plugin/bootstrap-notify/bootstrap-notify.min.js' %}"></script>
-
-    <script src="{% static 'js/plugin/bootstrap-toggle/bootstrap-toggle.min.js' %}"></script>
-
-    <script src="{% static 'js/plugin/jquery-mapael/jquery.mapael.min.js' %}"></script>
-
-    <script src="{% static 'js/plugin/jquery-mapael/maps/world_countries.min.js' %}"></script>
-
-    <script src="{% static 'js/plugin/chart-circle/circles.min.js' %}"></script>
-
-    <script src="{% static 'js/plugin/jquery-scrollbar/jquery.scrollbar.min.js' %}"></script>
-
-    <script src="{% static 'js/ready.min.js' %}"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
-    <script src="{% static 'js/dashboard.js' %}?v=12"></script>
+    <script src="{% static 'js/dashboard.js' %}?v=14"></script>
 
 </body>
 

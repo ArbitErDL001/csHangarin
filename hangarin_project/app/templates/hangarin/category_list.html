@@ -19,6 +19,9 @@
             <div class="col-auto">
               <select class="form-control form-control-sm" id="categorySortSelect" name="sort_by" onchange="this.form.submit()">
                 <option value="name" {% if current == 'name' %}selected{% endif %}>Name</option>
+                <option value="-name" {% if current == '-name' %}selected{% endif %}>Name (Z-A)</option>
+                <option value="created_at" {% if current == 'created_at' %}selected{% endif %}>Date added (oldest first)</option>
+                <option value="-created_at" {% if current == '-created_at' %}selected{% endif %}>Date added (newest first)</option>
               </select>
             </div>
             <div class="col-auto">
@@ -31,6 +34,7 @@
           <thead>
             <tr>
               <th>Name</th>
+              <th>Date added</th>
               <th class="text-right">Actions</th>
             </tr>
           </thead>
@@ -38,6 +42,7 @@
             {% for category in categories %}
             <tr>
               <td>{{ category.name }}</td>
+              <td>{{ category.created_at|date:'Y-m-d H:i' }}</td>
               <td class="text-right">
                 <a href="{% url 'category-edit' category.pk %}" class="btn btn-sm btn-secondary">Edit</a>
                 <a href="{% url 'category-delete' category.pk %}?next={{ request.get_full_path|urlencode }}" class="btn btn-sm btn-danger">Delete</a>
@@ -45,7 +50,7 @@
             </tr>
             {% empty %}
             <tr>
-              <td colspan="2">No categories yet.</td>
+              <td colspan="3">No categories yet.</td>
             </tr>
             {% endfor %}
           </tbody>

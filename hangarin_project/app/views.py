@@ -152,7 +152,7 @@ class CategoryListView(SearchSortListView):
 	template_name = 'hangarin/category_list.html'
 	context_object_name = 'categories'
 	search_fields = ('name',)
-	allowed_sort_fields = ('name',)
+	allowed_sort_fields = ('name', '-name', 'created_at', '-created_at')
 
 
 class PriorityListView(SearchSortListView):
@@ -160,7 +160,7 @@ class PriorityListView(SearchSortListView):
 	template_name = 'hangarin/priority_list.html'
 	context_object_name = 'priorities'
 	search_fields = ('name',)
-	allowed_sort_fields = ('name',)
+	allowed_sort_fields = ('name', '-name', 'created_at', '-created_at')
 
 
 class TaskCreateView(CreateView):

@@ -1,6 +1,27 @@
 document.addEventListener('DOMContentLoaded', function () {
+    var backgroundImagePaths = [
+        '/static/img/background.png',
+        '/static/img/background2.jpg',
+        '/static/img/background3.jpg',
+        '/static/img/background4.jpg',
+        '/static/img/background5.jpg'
+    ];
+
+    function preloadBackgroundImages() {
+        return Promise.all(backgroundImagePaths.map(function (path) {
+            return new Promise(function (resolve) {
+                var image = new Image();
+                image.onload = resolve;
+                image.onerror = resolve;
+                image.src = path;
+            });
+        }));
+    }
+
     function finishLoading() {
-        document.body.classList.remove('dashboard-loading');
+        preloadBackgroundImages().then(function () {
+            document.body.classList.remove('dashboard-loading');
+        });
     }
 
     document.querySelectorAll('.messages').forEach(function (messageGroup) {
@@ -71,6 +92,43 @@ document.addEventListener('DOMContentLoaded', function () {
         );
 
         animateElements(Array.from(targets));
+    }
+
+    var mobileSidebar = document.querySelector('.sidebar');
+    var mobileSidebarToggle = document.querySelector('.sidebar-toggle');
+
+    function syncMobileSidebarState() {
+        if (!mobileSidebar || !mobileSidebarToggle) {
+            return;
+        }
+
+        if (window.innerWidth <= 768) {
+            var isExpanded = mobileSidebar.classList.contains('is-expanded');
+            mobileSidebarToggle.setAttribute('aria-expanded', String(isExpanded));
+            mobileSidebarToggle.setAttribute('aria-label', isExpanded ? 'Minimize sidebar' : 'Maximize sidebar');
+            mobileSidebarToggle.textContent = 'ΛΞ';
+            return;
+        }
+
+        mobileSidebar.classList.remove('is-expanded');
+        mobileSidebarToggle.setAttribute('aria-expanded', 'false');
+        mobileSidebarToggle.setAttribute('aria-label', 'Maximize sidebar');
+        mobileSidebarToggle.textContent = 'ΛΞ';
+    }
+
+    if (mobileSidebar && mobileSidebarToggle) {
+        mobileSidebarToggle.addEventListener('click', function () {
+            if (window.innerWidth > 768) {
+                return;
+            }
+
+            var shouldExpand = !mobileSidebar.classList.contains('is-expanded');
+            mobileSidebar.classList.toggle('is-expanded', shouldExpand);
+            syncMobileSidebarState();
+        });
+
+        window.addEventListener('resize', syncMobileSidebarState);
+        syncMobileSidebarState();
     }
 
     setTheme(getSavedTheme() || 'nebula');
@@ -155,6 +213,10 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
 
         var link = event.currentTarget;
+        if (!(link instanceof HTMLAnchorElement) || !link.href) {
+            return;
+        }
+
         var response;
 
         try {
@@ -197,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function bindPaginationLinks() {
-        document.querySelectorAll('.pagination .page-link').forEach(function (link) {
+        document.querySelectorAll('.pagination a.page-link[href]').forEach(function (link) {
             link.removeEventListener('click', refreshPagination);
             link.addEventListener('click', refreshPagination);
         });
