@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Edit profile | Hangarin{% endblock %}
+{% block content %}
+<main class="dashboard-content profile-page">
+  <header class="dashboard-header">
+    <div>
+      <p class="eyebrow">Account</p>
+      <h1>Edit profile</h1>
+    </div>
+    <a class="dashboard-action" href="{% url 'profile' %}">Back to profile</a>
+  </header>
+
+  <form class="dashboard-panel profile-edit-form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="profile-form-errors" role="alert">
+        {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+      </div>
+    {% endif %}
+
+    {% for field in form %}
+      <div class="field">
+        {{ field.label_tag }}
+        {{ field }}
+        {% for error in field.errors %}
+          <p class="profile-form-errors">{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+    <div class="field profile-picture-field">
+      <label for="id_avatar">Profile picture</label>
+      <div class="profile-picture-preview">
+        {% if user_profile.avatar %}
+          <img id="profile-picture-preview" src="{{ user_profile.avatar.url }}" alt="Current profile picture">
+        {% else %}
+          <span id="profile-picture-initial" aria-hidden="true">{{ request.user.username|slice:':1'|upper }}</span>
+          <img id="profile-picture-preview" alt="Profile picture preview" hidden>
+        {% endif %}
+      </div>
+      {{ picture_form.avatar }}
+      {% if picture_form.avatar.help_text %}
+        <small class="profile-picture-help">{{ picture_form.avatar.help_text }}</small>
+      {% endif %}
+      {% for error in picture_form.avatar.errors %}
+        <p class="profile-form-errors">{{ error }}</p>
+      {% endfor %}
+    </div>
+
+    <div class="profile-form-actions">
+      <a class="dashboard-action profile-cancel" href="{% url 'profile' %}">Cancel</a>
+      <button class="dashboard-action profile-save" type="submit">Save changes</button>
+    </div>
+  </form>
+</main>
+<script>
+  var avatarInput = document.querySelector('#id_avatar');
+  var avatarPreview = document.querySelector('#profile-picture-preview');
+  var avatarInitial = document.querySelector('#profile-picture-initial');
+
+  if (avatarInput && avatarPreview) {
+    avatarInput.addEventListener('change', function () {
+      var image = avatarInput.files && avatarInput.files[0];
+      if (!image) return;
+      avatarPreview.src = URL.createObjectURL(image);
+      avatarPreview.hidden = false;
+      if (avatarInitial) avatarInitial.hidden = true;
+    });
+  }
+</script>
+{% endblock %}

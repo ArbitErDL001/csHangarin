@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}My profile | Hangarin{% endblock %}
+{% block content %}
+<main class="dashboard-content profile-page">
+  <header class="dashboard-header">
+    <div>
+      <p class="eyebrow">Account</p>
+      <h1>My profile</h1>
+    </div>
+    <a class="dashboard-action" href="{% url 'profile-edit' %}">Edit profile</a>
+  </header>
+
+  <section class="profile-overview-grid">
+    <article class="dashboard-panel">
+      <div class="profile-identity">
+        {% if user_profile.avatar %}
+          <img class="profile-avatar-image" src="{{ user_profile.avatar.url }}" alt="{{ request.user.username }} profile picture">
+        {% else %}
+          <span class="profile-avatar" aria-hidden="true">{{ request.user.username|slice:':1'|upper }}</span>
+        {% endif %}
+        <div>
+          <h2>{% firstof request.user.get_full_name request.user.username %}</h2>
+          <p>@{{ request.user.username }}</p>
+        </div>
+      </div>
+      <dl class="profile-details">
+        <div>
+          <dt>Email</dt>
+          <dd>{{ request.user.email|default:'Not set' }}</dd>
+        </div>
+        <div>
+          <dt>Member since</dt>
+          <dd>{{ request.user.date_joined|date:'F j, Y' }}</dd>
+        </div>
+      </dl>
+    </article>
+
+    <article class="dashboard-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Workspace progress</p>
+          <h2>Task completion</h2>
+        </div>
+        <span class="panel-period">Shared workspace</span>
+      </div>
+      <div class="profile-completion">
+        <strong>{{ completion_rate }}%</strong>
+        <span>of active tasks completed</span>
+      </div>
+      <div class="profile-progress-track" role="progressbar" aria-label="Workspace task completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ completion_rate }}">
+        <span class="profile-progress-fill" style="width: {{ completion_rate }}%"></span>
+      </div>
+      <div class="profile-metrics">
+        <div class="profile-metric">
+          <strong>{{ workspace_task_count }}</strong>
+          <span>Active tasks</span>
+        </div>
+        <div class="profile-metric">
+          <strong>{{ workspace_completed_count }}</strong>
+          <span>Completed</span>
+        </div>
+        <div class="profile-metric">
+          <strong>{{ workspace_in_progress_count }}</strong>
+          <span>In progress</span>
+        </div>
+      </div>
+      <p class="profile-scope-note">Tasks are currently shared across accounts, so these figures describe the workspace.</p>
+    </article>
+  </section>
+
+  <section class="profile-activity-grid">
+    <article class="dashboard-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Latest updates</p>
+          <h2>Recent activity</h2>
+        </div>
+      </div>
+      <div class="profile-task-list">
+        {% for task in recent_activity %}
+          <div class="profile-task-row">
+            <div class="profile-task-main">
+              <a href="{% url 'task-edit' task.pk %}">{{ task.title }}</a>
+              <span class="profile-task-meta">Updated {{ task.updated_at|timesince }} ago</span>
+            </div>
+            <span class="profile-task-status">{{ task.get_status_display }}</span>
+          </div>
+        {% empty %}
+          <p class="profile-empty">Task activity will appear here.</p>
+        {% endfor %}
+      </div>
+    </article>
+
+    <article class="dashboard-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">New work</p>
+          <h2>Recently added tasks</h2>
+        </div>
+      </div>
+      <div class="profile-task-list">
+        {% for task in recent_tasks %}
+          <div class="profile-task-row">
+            <div class="profile-task-main">
+              <a href="{% url 'task-edit' task.pk %}">{{ task.title }}</a>
+              <span class="profile-task-meta">Added {{ task.created_at|date:'M j, Y' }}</span>
+            </div>
+            <span class="profile-task-status">{{ task.get_status_display }}</span>
+          </div>
+        {% empty %}
+          <p class="profile-empty">New tasks will appear here.</p>
+        {% endfor %}
+      </div>
+    </article>
+  </section>
+</main>
+{% endblock %}

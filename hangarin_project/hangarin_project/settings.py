@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'pwa',
 
     'app',
     'widget_tweaks',
@@ -149,6 +150,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -165,3 +168,42 @@ LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
 ACCOUNT_ADAPTER = 'app.adapter.AccountAdapter'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+# Progressive Web App settings
+PWA_APP_NAME = 'csHangarin'
+PWA_APP_DESCRIPTION = 'Organize your work and track your progress with csHangarin.'
+PWA_APP_THEME_COLOR = '#0A0A0A'
+PWA_APP_BACKGROUND_COLOR = '#FFFFFF'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/img/icon-192.png',
+        'sizes': '192x192',
+        'type': 'image/png',
+        'purpose': 'any maskable',
+    },
+    {
+        'src': '/static/img/icon-512.png',
+        'sizes': '512x512',
+        'type': 'image/png',
+        'purpose': 'any maskable',
+    },
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': '/static/img/icon-192.png',
+        'sizes': '192x192',
+        'type': 'image/png',
+    },
+    {
+        'src': '/static/img/icon-512.png',
+        'sizes': '512x512',
+        'type': 'image/png',
+    },
+]
+PWA_APP_DIR = 'ltr'
+PWA_SERVICE_WORKER_PATH = BASE_DIR / 'static' / 'js' / 'serviceworker.js'

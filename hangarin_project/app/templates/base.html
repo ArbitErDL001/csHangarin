@@ -3,6 +3,17 @@
 
 <head>
     {% load static %}
+    {% load pwa %}
+
+    <script>
+        window.hangarinInstallPrompt = null;
+        window.addEventListener('beforeinstallprompt', function (event) {
+            event.preventDefault();
+            window.hangarinInstallPrompt = event;
+        });
+    </script>
+
+    {% progressive_web_app_meta %}
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
@@ -23,7 +34,7 @@
         name="viewport"
     />
 
-    <link rel="stylesheet" href="{% static 'css/dashboard-clean.css' %}?v=10">
+    <link rel="stylesheet" href="{% static 'css/dashboard-clean.css' %}?v=19">
 
     <link
         rel="stylesheet"
@@ -74,7 +85,14 @@
 
                         <span class="profile-avatar">
 
-                            {% if request.user.is_authenticated and request.user.socialaccount_set.all.0.get_avatar_url %}
+                            {% if request.user.is_authenticated and request.user.profile.avatar %}
+
+                                <img
+                                    src="{{ request.user.profile.avatar.url }}"
+                                    alt="{{ request.user.username }} profile picture"
+                                >
+
+                            {% elif request.user.is_authenticated and request.user.socialaccount_set.all.0.get_avatar_url %}
 
                                 <img
                                     src="{{ request.user.socialaccount_set.all.0.get_avatar_url }}"
@@ -117,7 +135,7 @@
 
                         <!-- Settings -->
                         <a
-                            href="#settings"
+                            href="{% url 'settings' %}"
                             class="account-menu-link"
                         >
                             <i class="la la-cog"></i>
@@ -127,7 +145,7 @@
 
                         <!-- Account -->
                         <a
-                            href="#profile"
+                            href="{% url 'profile' %}"
                             class="account-menu-link"
                         >
                             <i class="la la-user"></i>
@@ -205,7 +223,14 @@
 
                     <div class="user-avatar">
 
-                        {% if request.user.is_authenticated and request.user.socialaccount_set.all.0.get_avatar_url %}
+                        {% if request.user.is_authenticated and request.user.profile.avatar %}
+
+                            <img
+                                src="{{ request.user.profile.avatar.url }}"
+                                alt="{{ request.user.username }} profile picture"
+                            >
+
+                        {% elif request.user.is_authenticated and request.user.socialaccount_set.all.0.get_avatar_url %}
 
                             <img
                                 src="{{ request.user.socialaccount_set.all.0.get_avatar_url }}"
@@ -261,7 +286,7 @@
                             <ul class="nav">
 
                                 <li>
-                                    <a href="#profile">
+                                    <a href="{% url 'profile' %}">
                                         <span class="link-collapse">
                                             My Profile
                                         </span>
@@ -270,7 +295,7 @@
 
 
                                 <li>
-                                    <a href="#edit">
+                                    <a href="{% url 'profile-edit' %}">
                                         <span class="link-collapse">
                                             Edit Profile
                                         </span>
@@ -279,7 +304,7 @@
 
 
                                 <li>
-                                    <a href="#settings">
+                                    <a href="{% url 'settings' %}">
                                         <span class="link-collapse">
                                             Settings
                                         </span>
@@ -389,6 +414,46 @@
 
             </div>
 
+            <a
+                class="dashboard-credit-badge sidebar-credit-badge"
+                href="https://github.com/ArbitErDL001"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="ΛΞDL on GitHub"
+            >
+                <span class="dashboard-credit-mark" aria-hidden="true">ΛΞ</span>
+                <span>Crafted by <strong>ΛΞDL</strong></span>
+                <i class="la la-github" aria-hidden="true"></i>
+            </a>
+
+            <div class="sidebar-install">
+                <button
+                    class="sidebar-install-button"
+                    id="install-app"
+                    type="button"
+                    aria-label="Install csHangarin"
+                    title="Install csHangarin as an app"
+                >
+                    <span class="circle2" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
+                        </svg>
+                    </span>
+                    <span class="title2">Install app</span>
+                    <span class="title-hover2">Click here</span>
+                    <span class="install-download-state" aria-hidden="true">
+                        <span class="install-download-info">
+                            <span class="install-download-label">Preparing app</span>
+                            <span class="install-download-percent">0%</span>
+                        </span>
+                        <span class="install-progress-track" role="progressbar" aria-label="App download" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                            <span class="install-progress-fill"></span>
+                        </span>
+                        <span class="install-download-remaining"></span>
+                    </span>
+                </button>
+            </div>
+
         </div>
 
 
@@ -401,6 +466,20 @@
 
             {% endblock %}
 
+            <footer class="dashboard-credit">
+                <a
+                    class="dashboard-credit-badge"
+                    href="https://github.com/ArbitErDL001"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="ΛΞDL on GitHub"
+                >
+                    <span class="dashboard-credit-mark" aria-hidden="true">ΛΞ</span>
+                    <span>Crafted by <strong>ΛΞDL</strong></span>
+                    <i class="la la-github" aria-hidden="true"></i>
+                </a>
+            </footer>
+
         </div>
 
     </div>
@@ -412,7 +491,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
-    <script src="{% static 'js/dashboard.js' %}?v=14"></script>
+    <script src="{% static 'js/dashboard.js' %}?v=21"></script>
 
 </body>
 

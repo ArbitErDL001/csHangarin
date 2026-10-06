@@ -1,4 +1,31 @@
+from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
 from django.db import models
+
+
+def validate_profile_image_size(image):
+    if image.size > 5 * 1024 * 1024:
+        raise ValidationError('Profile pictures must be 5 MB or smaller.')
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='profile',
+    )
+    avatar = models.ImageField(
+        upload_to='profile_pictures/',
+        blank=True,
+        validators=[
+            FileExtensionValidator(allowed_extensions=('jpg', 'jpeg', 'png', 'webp')),
+            validate_profile_image_size,
+        ],
+    )
+
+    def __str__(self):
+        return f'{self.user} profile'
 
 
 class Category(models.Model):

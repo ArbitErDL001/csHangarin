@@ -1,6 +1,28 @@
 from django import forms
+from django.contrib.auth import get_user_model
 
-from .models import Category, Note, Priority, SubTask, Task
+from .models import Category, Note, Priority, Profile, SubTask, Task
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = ('username', 'first_name', 'last_name', 'email')
+
+
+class ProfilePictureForm(forms.ModelForm):
+    avatar = forms.ImageField(
+        label='Profile picture',
+        required=False,
+        help_text='JPG, PNG, or WebP. Maximum size 5 MB.',
+        widget=forms.FileInput(attrs={
+            'accept': 'image/jpeg,image/png,image/webp',
+        }),
+    )
+
+    class Meta:
+        model = Profile
+        fields = ('avatar',)
 
 
 class TaskForm(forms.ModelForm):

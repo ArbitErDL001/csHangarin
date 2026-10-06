@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.db.models.deletion import ProtectedError
@@ -8,8 +9,8 @@ from django.views.decorators.http import require_POST
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
-from .forms import CategoryForm, NoteForm, PriorityForm, SubTaskForm, TaskForm
-from .models import Category, Note, Priority, SubTask, Task
+from .forms import CategoryForm, NoteForm, PriorityForm, ProfileForm, ProfilePictureForm, SubTaskForm, TaskForm
+from .models import Category, Note, Priority, Profile, SubTask, Task
 
 
 def service_worker(request):
@@ -61,6 +62,52 @@ def home(request):
 		'archive_paginator': archive_paginator,
 		'archive_is_paginated': archive_page.has_other_pages(),
 	})
+
+
+@login_required
+def profile(request):
+	user_profile, _ = Profile.objects.get_or_create(user=request.user)
+	workspace_tasks = Task.objects.filter(is_deleted=False)
+	task_count = workspace_tasks.count()
+	completed_count = workspace_tasks.filter(status=Task.Status.DONE).count()
+	completion_rate = round(completed_count * 100 / task_count) if task_count else 0
+	return render(request, 'hangarin/profile.html', {
+		'user_profile': user_profile,
+		'workspace_task_count': task_count,
+		'workspace_completed_count': completed_count,
+		'workspace_in_progress_count': workspace_tasks.filter(status=Task.Status.IN_PROGRESS).count(),
+		'completion_rate': completion_rate,
+		'recent_activity': workspace_tasks.order_by('-updated_at')[:5],
+		'recent_tasks': workspace_tasks.order_by('-created_at')[:5],
+	})
+
+
+@login_required
+def profile_edit(request):
+	user_profile, _ = Profile.objects.get_or_create(user=request.user)
+	form = ProfileForm(request.POST or None, instance=request.user)
+	picture_form = ProfilePictureForm(
+		request.POST or None,
+		request.FILES or None,
+		instance=user_profile,
+	)
+	account_form_valid = form.is_valid()
+	picture_form_valid = picture_form.is_valid()
+	if request.method == 'POST' and account_form_valid and picture_form_valid:
+		form.save()
+		picture_form.save()
+		messages.success(request, 'Your profile has been updated.')
+		return redirect('profile')
+	return render(request, 'hangarin/profile_edit.html', {
+		'form': form,
+		'picture_form': picture_form,
+		'user_profile': user_profile,
+	})
+
+
+@login_required
+def settings_view(request):
+	return render(request, 'hangarin/settings.html')
 
 
 def redirect_to_next(request, default):

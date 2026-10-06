@@ -12,6 +12,7 @@ ENV/
 # Django and local development
 *.log
 .local/
+media/
 
 # Environment and secrets
 .env

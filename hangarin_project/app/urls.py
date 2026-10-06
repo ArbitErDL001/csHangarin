@@ -4,6 +4,9 @@ from . import views
 urlpatterns = [
     path('serviceworker.js', views.service_worker, name='service-worker'),
     path('user-data-deletion/', views.user_data_deletion, name='user-data-deletion'),
+    path('profile/', views.profile, name='profile'),
+    path('profile/edit/', views.profile_edit, name='profile-edit'),
+    path('settings/', views.settings_view, name='settings'),
     path('', views.home, name='home'),
 
     path('tasks/', views.TaskListView.as_view(), name='task-list'),

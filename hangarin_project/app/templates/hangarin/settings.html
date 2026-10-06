@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Settings | Hangarin{% endblock %}
+{% block content %}
+<main class="dashboard-content settings-page">
+  <header class="dashboard-header">
+    <div>
+      <p class="eyebrow">Preferences</p>
+      <h1>Settings</h1>
+    </div>
+  </header>
+
+  <section class="dashboard-panel settings-panel" aria-labelledby="appearance-heading">
+    <div class="panel-heading">
+      <div>
+        <p class="eyebrow">Appearance</p>
+        <h2 id="appearance-heading">Color theme</h2>
+      </div>
+    </div>
+
+    <div class="settings-theme-grid" aria-label="Choose a color theme">
+      <button type="button" class="theme-option settings-theme-option" data-theme="nebula" aria-checked="false" aria-pressed="false">
+        <span class="settings-theme-swatch settings-theme-nebula" aria-hidden="true"></span>
+        <span class="settings-theme-copy">Nebula</span>
+      </button>
+      <button type="button" class="theme-option settings-theme-option" data-theme="forest" aria-checked="false" aria-pressed="false">
+        <span class="settings-theme-swatch settings-theme-forest" aria-hidden="true"></span>
+        <span class="settings-theme-copy">Forest</span>
+      </button>
+      <button type="button" class="theme-option settings-theme-option" data-theme="desert" aria-checked="false" aria-pressed="false">
+        <span class="settings-theme-swatch settings-theme-desert" aria-hidden="true"></span>
+        <span class="settings-theme-copy">Desert</span>
+      </button>
+      <button type="button" class="theme-option settings-theme-option" data-theme="sea" aria-checked="false" aria-pressed="false">
+        <span class="settings-theme-swatch settings-theme-sea" aria-hidden="true"></span>
+        <span class="settings-theme-copy">Sea</span>
+      </button>
+      <button type="button" class="theme-option settings-theme-option" data-theme="crimson" aria-checked="false" aria-pressed="false">
+        <span class="settings-theme-swatch settings-theme-crimson" aria-hidden="true"></span>
+        <span class="settings-theme-copy">Crimson</span>
+      </button>
+      <button type="button" class="theme-option settings-theme-option" data-theme="light" aria-checked="false" aria-pressed="false">
+        <span class="settings-theme-swatch settings-theme-light" aria-hidden="true"></span>
+        <span class="settings-theme-copy">Light</span>
+      </button>
+    </div>
+
+    <p class="settings-theme-note">Your theme is saved in this browser and applies across Hangarin pages.</p>
+  </section>
+</main>
+{% endblock %}

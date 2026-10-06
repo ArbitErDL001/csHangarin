@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var themeToggle = document.querySelector('.theme-toggle');
     var themeOptions = document.querySelector('.theme-options');
     var themeChoices = document.querySelectorAll('.theme-option');
-    var themes = ['nebula', 'forest', 'desert', 'sea', 'crimson'];
+    var themes = ['nebula', 'forest', 'desert', 'sea', 'crimson', 'light'];
 
     function getSavedTheme() {
         try {
@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
         themeChoices.forEach(function (choice) {
             choice.classList.toggle('is-selected', choice.dataset.theme === theme);
             choice.setAttribute('aria-checked', String(choice.dataset.theme === theme));
+            choice.setAttribute('aria-pressed', String(choice.dataset.theme === theme));
         });
     }
 
@@ -129,6 +130,203 @@ document.addEventListener('DOMContentLoaded', function () {
 
         window.addEventListener('resize', syncMobileSidebarState);
         syncMobileSidebarState();
+    }
+
+    var installButton = document.querySelector('#install-app');
+
+    if (installButton) {
+        var installAssets = [
+            '/static/css/dashboard-clean.css',
+            '/static/css/login.css',
+            '/static/js/dashboard.js',
+            '/static/js/login.js',
+            '/static/img/icon-192.png',
+            '/static/img/icon-512.png'
+        ];
+        var installCacheName = 'hangarin-static-v13';
+        var installDownloadLabel = installButton.querySelector('.install-download-label');
+        var installDownloadPercent = installButton.querySelector('.install-download-percent');
+        var installDownloadRemaining = installButton.querySelector('.install-download-remaining');
+        var installProgressTrack = installButton.querySelector('.install-progress-track');
+        var installProgressFill = installButton.querySelector('.install-progress-fill');
+        var installAssetsReady = false;
+        var appInstalled = false;
+
+        var isStandalone = window.matchMedia('(display-mode: standalone)').matches
+            || window.navigator.standalone === true;
+
+        if (isStandalone) {
+            installButton.hidden = true;
+        }
+
+        window.addEventListener('appinstalled', function () {
+            window.hangarinInstallPrompt = null;
+            appInstalled = true;
+            if (!installButton.disabled) {
+                installButton.hidden = true;
+            }
+        });
+
+        function setInstallProgress(loadedBytes, totalBytes, startedAt) {
+            var percentage = Math.min(100, Math.floor((loadedBytes / totalBytes) * 100));
+            var elapsedSeconds = Math.max((performance.now() - startedAt) / 1000, 0.1);
+            var bytesPerSecond = loadedBytes / elapsedSeconds;
+            var remainingSeconds = bytesPerSecond > 0
+                ? Math.ceil((totalBytes - loadedBytes) / bytesPerSecond)
+                : 0;
+
+            installDownloadPercent.textContent = percentage + '%';
+            installDownloadRemaining.textContent = remainingSeconds > 0
+                ? remainingSeconds + 's remaining'
+                : '';
+            installProgressFill.style.width = percentage + '%';
+            installProgressTrack.setAttribute('aria-valuenow', String(percentage));
+            installButton.setAttribute('aria-label', 'Preparing app: ' + percentage + '%');
+        }
+
+        function downloadInstallAssets(signal) {
+            return Promise.all(installAssets.map(function (assetUrl) {
+                return fetch(assetUrl, { method: 'HEAD', cache: 'no-store', signal: signal })
+                    .then(function (response) {
+                        var size = Number(response.headers.get('content-length'));
+                        if (!response.ok || !size) {
+                            throw new Error('Unable to determine app asset size.');
+                        }
+                        return { url: assetUrl, size: size };
+                    });
+            })).then(function (assets) {
+                var totalBytes = assets.reduce(function (total, asset) {
+                    return total + asset.size;
+                }, 0);
+                var loadedBytes = 0;
+                var startedAt = performance.now();
+                var assetCachePromise = caches.open(installCacheName);
+
+                setInstallProgress(0, totalBytes, startedAt);
+
+                return Promise.all(assets.map(function (asset) {
+                    return fetch(asset.url, {
+                        cache: 'no-store',
+                        headers: { 'X-Hangarin-Download': 'true' },
+                        signal: signal
+                    }).then(function (response) {
+                        if (!response.ok || !response.body) {
+                            throw new Error('Unable to download app assets.');
+                        }
+
+                        var responseForCache = response.clone();
+                        var cacheWrite = assetCachePromise.then(function (cache) {
+                            return cache.put(asset.url, responseForCache);
+                        });
+                        var reader = response.body.getReader();
+
+                        function readNextChunk() {
+                            return reader.read().then(function (result) {
+                                if (result.done) {
+                                    return cacheWrite;
+                                }
+
+                                loadedBytes += result.value.byteLength;
+                                setInstallProgress(loadedBytes, totalBytes, startedAt);
+                                return readNextChunk();
+                            });
+                        }
+
+                        return readNextChunk();
+                    });
+                })).then(function () {
+                    setInstallProgress(totalBytes, totalBytes, startedAt);
+                    installAssetsReady = true;
+                });
+            });
+        }
+
+        function getInstallInstructions() {
+            var isAppleMobile = /iPhone|iPad|iPod/.test(window.navigator.userAgent)
+                || (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
+            return isAppleMobile
+                ? 'Share > Add to Home Screen'
+                : 'Browser menu > Install app';
+        }
+
+        function continueInstall() {
+            var installPrompt = window.hangarinInstallPrompt;
+            if (!installPrompt) {
+                installDownloadRemaining.textContent = getInstallInstructions();
+                installButton.setAttribute('aria-label', 'Download complete. ' + getInstallInstructions());
+                return;
+            }
+
+            window.hangarinInstallPrompt = null;
+            installButton.disabled = true;
+            installDownloadRemaining.textContent = 'Opening install prompt';
+
+            try {
+                installPrompt.prompt();
+            } catch (error) {
+                installButton.disabled = false;
+                installDownloadRemaining.textContent = getInstallInstructions();
+                return;
+            }
+
+            installPrompt.userChoice.then(function (choice) {
+                if (choice.outcome === 'accepted' || appInstalled) {
+                    installButton.hidden = true;
+                    return;
+                }
+
+                installButton.disabled = false;
+                installDownloadRemaining.textContent = getInstallInstructions();
+                installButton.setAttribute('aria-label', 'Download complete. ' + getInstallInstructions());
+            }).catch(function () {
+                installButton.disabled = false;
+                installDownloadRemaining.textContent = getInstallInstructions();
+            });
+        }
+
+        installButton.addEventListener('click', function () {
+            if (installButton.disabled) {
+                return;
+            }
+
+            if (installAssetsReady) {
+                continueInstall();
+                return;
+            }
+
+            installButton.disabled = true;
+            installButton.classList.remove('is-download-complete');
+            installButton.classList.remove('is-download-error');
+            installButton.classList.add('is-downloading');
+            installDownloadLabel.textContent = 'Preparing app';
+            var abortController = new AbortController();
+
+            downloadInstallAssets(abortController.signal).then(function () {
+                if (appInstalled) {
+                    installButton.hidden = true;
+                    return;
+                }
+
+                installButton.classList.remove('is-downloading');
+                installButton.classList.add('is-download-complete');
+                installButton.disabled = false;
+                installDownloadLabel.textContent = 'Download complete';
+                installDownloadRemaining.textContent = 'Continue to install';
+                installButton.setAttribute('aria-label', 'Download complete. Continue to install.');
+            }).catch(function () {
+                if (appInstalled) {
+                    installButton.hidden = true;
+                    return;
+                }
+
+                installButton.classList.remove('is-downloading');
+                installButton.classList.add('is-download-error');
+                installButton.disabled = false;
+                installDownloadLabel.textContent = 'Download incomplete';
+                installDownloadRemaining.textContent = 'Tap to retry';
+                installButton.setAttribute('aria-label', 'Download incomplete. Tap to retry.');
+            });
+        });
     }
 
     setTheme(getSavedTheme() || 'nebula');
