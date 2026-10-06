@@ -12,6 +12,15 @@ from .models import Profile, Task
 
 
 class LoginPageTests(TestCase):
+	def test_install_asset_sizes_returns_all_app_shell_assets(self):
+		response = self.client.get(reverse('install-asset-sizes'))
+
+		self.assertEqual(response.status_code, 200)
+		assets = response.json()['assets']
+		self.assertEqual(len(assets), 6)
+		self.assertTrue(all(asset['size'] > 0 for asset in assets))
+		self.assertEqual(response['Cache-Control'], 'no-store')
+
 	def test_service_worker_endpoint_returns_javascript(self):
 		response = self.client.get('/serviceworker.js')
 

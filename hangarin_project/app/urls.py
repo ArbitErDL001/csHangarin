@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('serviceworker.js', views.service_worker, name='service-worker'),
+    path('install/assets/', views.install_asset_sizes, name='install-asset-sizes'),
     path('user-data-deletion/', views.user_data_deletion, name='user-data-deletion'),
     path('profile/', views.profile, name='profile'),
     path('profile/edit/', views.profile_edit, name='profile-edit'),

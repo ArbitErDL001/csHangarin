@@ -135,15 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var installButton = document.querySelector('#install-app');
 
     if (installButton) {
-        var installAssets = [
-            '/static/css/dashboard-clean.css',
-            '/static/css/login.css',
-            '/static/js/dashboard.js',
-            '/static/js/login.js',
-            '/static/img/icon-192.png',
-            '/static/img/icon-512.png'
-        ];
-        var installCacheName = 'hangarin-static-v13';
+        var installCacheName = 'hangarin-static-v14';
         var installDownloadLabel = installButton.querySelector('.install-download-label');
         var installDownloadPercent = installButton.querySelector('.install-download-percent');
         var installDownloadRemaining = installButton.querySelector('.install-download-remaining');
@@ -185,16 +177,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function downloadInstallAssets(signal) {
-            return Promise.all(installAssets.map(function (assetUrl) {
-                return fetch(assetUrl, { method: 'HEAD', cache: 'no-store', signal: signal })
-                    .then(function (response) {
-                        var size = Number(response.headers.get('content-length'));
-                        if (!response.ok || !size) {
-                            throw new Error('Unable to determine app asset size.');
-                        }
-                        return { url: assetUrl, size: size };
-                    });
-            })).then(function (assets) {
+            return fetch('/install/assets/', { cache: 'no-store', signal: signal })
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Unable to get app asset sizes.');
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
+                    var assets = data.assets;
+                    if (!Array.isArray(assets) || !assets.length
+                        || assets.some(function (asset) {
+                            return !asset.url || !Number(asset.size);
+                        })) {
+                        throw new Error('App asset sizes are incomplete.');
+                    }
                 var totalBytes = assets.reduce(function (total, asset) {
                     return total + asset.size;
                 }, 0);
@@ -238,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     setInstallProgress(totalBytes, totalBytes, startedAt);
                     installAssetsReady = true;
                 });
-            });
+                });
         }
 
         function getInstallInstructions() {

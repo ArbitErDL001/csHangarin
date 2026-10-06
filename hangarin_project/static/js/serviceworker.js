@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hangarin-static-v13';
+const CACHE_NAME = 'hangarin-static-v14';
 const APP_SHELL = [
     '/offline/',
     '/static/css/dashboard-clean.css',

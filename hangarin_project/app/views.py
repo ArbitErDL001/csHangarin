@@ -1,16 +1,29 @@
+from pathlib import Path
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.staticfiles import finders
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.db.models.deletion import ProtectedError
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET, require_POST
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from .forms import CategoryForm, NoteForm, PriorityForm, ProfileForm, ProfilePictureForm, SubTaskForm, TaskForm
 from .models import Category, Note, Priority, Profile, SubTask, Task
+
+
+INSTALL_ASSET_PATHS = (
+	('/static/css/dashboard-clean.css', 'css/dashboard-clean.css'),
+	('/static/css/login.css', 'css/login.css'),
+	('/static/js/dashboard.js', 'js/dashboard.js'),
+	('/static/js/login.js', 'js/login.js'),
+	('/static/img/icon-192.png', 'img/icon-192.png'),
+	('/static/img/icon-512.png', 'img/icon-512.png'),
+)
 
 
 def service_worker(request):
@@ -21,6 +34,20 @@ def service_worker(request):
 		"});\n",
 		content_type='application/javascript',
 	)
+
+
+@require_GET
+def install_asset_sizes(request):
+	assets = []
+	for url, static_path in INSTALL_ASSET_PATHS:
+		asset_path = finders.find(static_path)
+		if not asset_path:
+			return JsonResponse({'error': f'Missing app asset: {static_path}'}, status=404)
+		assets.append({'url': url, 'size': Path(asset_path).stat().st_size})
+
+	response = JsonResponse({'assets': assets})
+	response['Cache-Control'] = 'no-store'
+	return response
 
 
 def user_data_deletion(request):
