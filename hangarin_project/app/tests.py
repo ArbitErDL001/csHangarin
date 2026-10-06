@@ -25,6 +25,14 @@ class LoginPageTests(TestCase):
 		self.assertContains(response, 'Continue with Google')
 		self.assertContains(response, 'Continue with GitHub')
 
+	def test_auth_pages_include_pwa_metadata(self):
+		for page_name in ('account_login', 'account_signup'):
+			with self.subTest(page_name=page_name):
+				response = self.client.get(reverse(page_name))
+				self.assertEqual(response.status_code, 200)
+				self.assertContains(response, 'manifest.json')
+				self.assertContains(response, 'serviceworker.js')
+
 	def test_login_redirects_authenticated_user_to_home(self):
 		get_user_model().objects.create_user(
 			username='aedl',
